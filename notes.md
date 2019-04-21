@@ -1,9 +1,29 @@
-# Configuring vs code
-- Useful extensions:
-    - cmake-tools
-    - GitLens
+# msvc++ and cmake and vscode
 
-# Configuring cmake-tools
+## Configuring `vs code`
+- Useful extensions:
+    - `C/C++` (by microsoft): intellisense, debugger, code browsing
+    - `Python` (by microsoft)
+    - `cmake-tools`: include path determination from cmake files, debugger configurations
+    - `cmake` (by twxs): syntax highlighting and command completion
+    - `cmake format`: auto indentation
+    - `GitLens`
+
+- To use `cmder` add the following to `<path to project>/.vscode/settings.json`:
+    ```json
+    {
+        "terminal.integrated.shell.windows": "cmd.exe",
+        "terminal.integrated.env.windows": {
+        "CMDER_ROOT": "C:/apps/cmder"
+        },
+        "terminal.integrated.shellArgs.windows": [
+        "/k C:/apps/cmder/vendor/init.bat"
+        ],
+    }
+    ```
+    *where the path to `cmder` must be adjusted accordingly.*
+
+## Configuring `cmake-tools`
 
 - By default `cmake-tools` seems to select `Ninja` as the generator. To override add the settings `<path to project>/.vscode/settings.json`:
     ```json
@@ -14,9 +34,9 @@
     ```
   (of course only the second setting is directly relevant to forcing the generator).
 
-# Configure CMake project
+## Configuring the `CMake` project
 
-## bool options
+### bool options
 
 - Define: 
     ```cmake
@@ -30,7 +50,7 @@
     endif(USE_LIB_A)
     ```
 
-## Defining dropdown options
+### Defining dropdown options
 
 - Define: 
     ```cmake
@@ -52,10 +72,105 @@
     endif(${c_sub_lib_name} STREQUAL ${LIB_ONE_NAME})
     ```
 
-# Configuring the CPP project
+### Setting Options with `cmake-tools`
 
-## lib/app skeleton
+- Add the option names and their settings to `<path to project>/.vscode/settings.json`:
+```json
+{
+    "cmake.configureSettings": {
+      "USE_LIB_A" : "ON"
+    },
+}
+```
+
+## Configuring the CPP project
+
+### Shared libs
+
+- By default symbols in a shared library are not available on windows (requiring `declspec`).  Set:
+    ```
+    CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=ON
+    ```
+    or equivalently in the `settings.json`:
+    ```json
+    {
+        "cmake.configureSettings": {
+        ...
+        "CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS" : "ON",
+        ...
+        },
+    }
+    ```
 
 
+### an example lib/app skeleton
 
+- File Structure
 
+```
+C:\USERS\COLINRAWLINGS\DESKTOP\TEST_CMAKE_TOOLS
+│   .gitignore
+│   CMakeLists.txt
+│
+├───app
+│   │   CMakeLists.txt
+│   │
+│   └───src
+│           main.cpp
+│
+├───lib_a
+│   │   CMakeLists.txt
+│   │
+│   ├───include
+│   │       a_lib.h
+│   │
+│   └───src
+│           a_lib.cpp
+```
+
+- Top level `CMakeLists.txt`
+    ```cmake
+        project(test_cmake_tools)
+        add_subdirectory(lib_a)
+        add_subdirectory(app)
+    ```
+    - Define `lib_a` first since it will be needed by `àpp`
+
+- `lib_a`'s `CMakeLists.txt`
+    ```cmake
+    add_library(lib_a STATIC)
+
+    target_sources(lib_a PUBLIC 
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/a_lib.cpp)
+
+    target_include_directories(lib_a PUBLIC 
+        ${CMAKE_CURRENT_SOURCE_DIR}/include)
+    ```
+    - Mark the header files which will be used externally with `PUBLIC`.
+    - Use absolute paths to files
+
+- `app`'s `CMakeLists.txt`
+    ```cmake
+    add_executable(main)
+
+    target_sources(main PUBLIC 
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp)
+
+    target_link_libraries(main lib_a)
+    ```
+    - Do not redefine the include directories of `lib_a`.
+    - To use `lib_a` in `main.cpp`:
+        ```cpp
+        #include <a_lib.h>
+        ```
+      
+
+## IDE Usage
+
+- A useful `cmake-tools` command is: 
+    ```
+    CMake: Delete cached build settings and reconfigure
+    ```
+- *Don't* use `tasks.json` to configure the debugging, this should be left to `cmake-tools`.
+- The core functionality (build and debug) can be triggered from the bar at the bottom of the application.  
+- Build and Debug are buttons which start the activity the configuration (i.e. the targets) are shown as dropdown's to the right of their buttons.  

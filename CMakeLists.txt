@@ -7,12 +7,20 @@ option(USE_LIB_C "use lib c" OFF)
 
 #
 
+message(STATUS "Configuring: ")
+message(STATUS "USE_LIB_A: " ${USE_LIB_A})
+message(STATUS "USE_LIB_C: " ${USE_LIB_C})
+
 project(test_cmake_tools)
 
-#add_subdirectory(lib_b)
+if(USE_LIB_A)
+  add_subdirectory(lib_a)
+endif(USE_LIB_A)
+
+# add_subdirectory(lib_b)
 
 if(USE_LIB_C)
-    add_subdirectory(lib_c)
+  add_subdirectory(lib_c)
 endif(USE_LIB_C)
 
 #
