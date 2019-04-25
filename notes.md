@@ -75,13 +75,27 @@
 ### Setting Options with `cmake-tools`
 
 - Add the option names and their settings to `<path to project>/.vscode/settings.json`:
-```json
-{
-    "cmake.configureSettings": {
-      "USE_LIB_A" : "ON"
-    },
-}
-```
+    ```json
+    {
+        ...
+        "cmake.configureSettings": {
+        "USE_LIB_A" : "ON"
+        },
+        ...
+    }
+    ```
+
+### Setting the Build Directory with `cmake-tools`
+
+- Add:
+    ```json
+    {
+        ...
+        "cmake.buildDirectory": "${workspaceRoot}/<relative bin path>",
+        ...
+    }
+    ```
+    *n.b. that ${workspaceRoot} is the parent of the `/.vscode` folder*
 
 ## Configuring the CPP project
 
@@ -148,6 +162,8 @@ C:\USERS\COLINRAWLINGS\DESKTOP\TEST_CMAKE_TOOLS
     ```
     - Mark the header files which will be used externally with `PUBLIC`.
     - Use absolute paths to files
+    - Do not use legacy `cmake` commands like `include_directories()`: 
+      <https://github.com/vector-of-bool/vscode-cmake-tools/issues/481#issuecomment-406787695>
 
 - `app`'s `CMakeLists.txt`
     ```cmake
