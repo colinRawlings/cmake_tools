@@ -1,3 +1,9 @@
+
+project(LibB)
+
+message(STATUS "Processing lib_b")
+message(STATUS "CMAKE_CURRENT_SOURCE_DIR: " ${CMAKE_CURRENT_SOURCE_DIR})
+
 # options
 
 set(LIB_ONE_NAME one)
@@ -9,12 +15,13 @@ set_property(CACHE c_sub_lib_name
 
 #
 
-set(lib_c_headers c_lib.h)
-set(lib_c_source c_lib.cpp)
+add_library(lib_c STATIC)
 
-add_library(lib_c STATIC ${lib_c_headers} ${lib_c_source})
+target_sources(lib_c PRIVATE
+ ${CMAKE_CURRENT_SOURCE_DIR}/src/c_lib.cpp
+ ${CMAKE_CURRENT_SOURCE_DIR}/include/c_lib.h)
 
-target_include_directories(lib_c INTERFACE ${lib_c_headers})
+target_include_directories(lib_c PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # select sub lib
 

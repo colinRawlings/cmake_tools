@@ -154,8 +154,9 @@ C:\USERS\COLINRAWLINGS\DESKTOP\TEST_CMAKE_TOOLS
     ```cmake
     add_library(lib_a STATIC)
 
-    target_sources(lib_a PUBLIC 
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/a_lib.cpp)
+    target_sources(lib_a PRIVATE 
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/a_lib.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/a_lib.h)
 
     target_include_directories(lib_a PUBLIC 
         ${CMAKE_CURRENT_SOURCE_DIR}/include)
@@ -169,12 +170,14 @@ C:\USERS\COLINRAWLINGS\DESKTOP\TEST_CMAKE_TOOLS
     ```cmake
     add_executable(main)
 
-    target_sources(main PUBLIC 
+    target_sources(main PRIVATE 
         ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp)
 
     target_link_libraries(main lib_a)
     ```
     - Do not redefine the include directories of `lib_a`.
+    - Including the header files in `target_sources()` can help IDE's
+    - The arguments for `target_sources()` will typically only be non-private in the case of header only libraries (public headers are defined via `PUBLIC` entries in `target_include_directories()`)
     - To use `lib_a` in `main.cpp`:
         ```cpp
         #include <a_lib.h>
