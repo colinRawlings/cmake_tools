@@ -9,23 +9,24 @@
     - `cmake format`: auto indentation
     - `GitLens`
 
-- To use `cmder` add the following to `<path to project>/.vscode/settings.json`:
+- To use `cmder` add the following to `%AppData%\Roaming\Code\User\settings.json` (the file edited when selecting `[File|Preferences|Settings]`).:
     ```json
     {
         "terminal.integrated.shell.windows": "cmd.exe",
         "terminal.integrated.env.windows": {
-        "CMDER_ROOT": "C:/apps/cmder"
+        "CMDER_ROOT": "<path to cmder>/cmder"
         },
         "terminal.integrated.shellArgs.windows": [
-        "/k C:/apps/cmder/vendor/init.bat"
+        "/k <path to cmder>/cmder/vendor/init.bat"
         ],
     }
     ```
-    *where the path to `cmder` must be adjusted accordingly.*
 
 ## Configuring `cmake-tools`
 
-- By default `cmake-tools` seems to select `Ninja` as the generator. To override add the settings `<path to project>/.vscode/settings.json`:
+- The compiler/linker are specified via the active `cmake-tools` "kit".  MSVC compilers are discovered with the help of `vswhere` (bundled).
+
+- By default `cmake-tools` selects `Ninja` as the generator. To override add the settings `<path to project>/.vscode/settings.json`:
     ```json
     "C_Cpp.default.configurationProvider": "vector-of-bool.cmake-tools",
     
