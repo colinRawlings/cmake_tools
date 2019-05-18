@@ -1,0 +1,5 @@
+---
+Language:        Cpp
+AlignAfterOpenBracket: Align
+ColumnLimit:     40
+BreakBeforeBraces: Allman

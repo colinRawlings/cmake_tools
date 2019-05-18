@@ -35,6 +35,29 @@
     ```
   (of course only the second setting is directly relevant to forcing the generator).
 
+## Configuring `clang-format`
+
+- Install llvm.
+
+- Set as formatter:
+
+    ```json
+    "[cpp]": {
+      "editor.defaultFormatter": "xaver.clang-format",
+    },
+    "clang-format.executable": "<path to LLVM>/bin/clang-format.exe",
+    "editor.formatOnSave": true,
+    "editor.formatOnType": true
+    ```
+
+- Format is taken from the first file with the name `_clang_format` or `.clang_format` encountered searching through the parent directories.
+
+- Useful hints can be obtained with: `clang-format.exe -dump-config -style=<style-of-interest>`
+
+- Complete settings are described in the [documentation](https://releases.llvm.org/8.0.0/tools/clang/docs/ClangFormatStyleOptions.html)
+
+
+
 ## Configuring the `CMake` project
 
 ### bool options
