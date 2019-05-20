@@ -34,43 +34,15 @@
     ```
   (of course only the second setting is directly relevant to forcing the generator).
 
+## Configuring the `vscode` C++ extension
+
+- Force intellisense by disabling fallback to the tag parser:
+    ```json
+    "C_Cpp.intelliSenseEngine" : "Default",
+    "C_Cpp.intelliSenseEngineFallback": "Disabled",
+    ```
+
 ## Configuring the `CMake` project
-
-### bool options
-
-- Define: 
-    ```cmake
-    option(USE_LIB_A "use lib a" OFF)
-    ```
-
-- Use:
-    ```cmake
-    if(USE_LIB_A)
-        add_subdirectory(lib_a)
-    endif(USE_LIB_A)
-    ```
-
-### Defining dropdown options
-
-- Define: 
-    ```cmake
-    set(c_sub_lib_name "one" CACHE STRING "sub lib used by lib c")
-    set_property(CACHE c_sub_lib_name
-                PROPERTY STRINGS ${LIB_ONE_NAME} ${LIB_TWO_NAME})
-    ```
-
-- Use:
-    ```cmake
-    if(${c_sub_lib_name} STREQUAL ${LIB_ONE_NAME})
-        message(STATUS "Using lib one")
-        add_subdirectory(sub_lib_one)
-    elseif(${c_sub_lib_name} STREQUAL ${LIB_TWO_NAME})
-        message(STATUS "Using lib two")
-        add_subdirectory(sub_lib_two)
-    else()
-        message(STATUS "No lib found")
-    endif(${c_sub_lib_name} STREQUAL ${LIB_ONE_NAME})
-    ```
 
 ### Setting Options with `cmake-tools`
 
@@ -116,8 +88,72 @@
     }
     ```
 
+## Incremental Builds
 
-### an example lib/app skeleton
+### `vswhere.exe`
+
+
+## Code Formating
+
+### Installing `clang-format`
+
+
+### Settings configuration
+      
+
+## IDE Usage
+
+- A useful `cmake-tools` command is: 
+    ```
+    CMake: Delete cached build settings and reconfigure
+    ```
+- If command line arguments are not required it is not necessary to use `tasks.json` to configure the debugging.
+- The core functionality (build and debug) can be triggered from the bar at the bottom of the application.  
+- Build and Debug are buttons which start the activity the configuration (i.e. the targets) are shown as dropdown's to the right of their buttons.  
+
+
+
+## Appendix
+
+### Defining cmake options
+
+#### bool options
+
+- Define: 
+    ```cmake
+    option(USE_LIB_A "use lib a" OFF)
+    ```
+
+- Use:
+    ```cmake
+    if(USE_LIB_A)
+        add_subdirectory(lib_a)
+    endif(USE_LIB_A)
+    ```
+
+#### Defining dropdown options
+
+- Define: 
+    ```cmake
+    set(c_sub_lib_name "one" CACHE STRING "sub lib used by lib c")
+    set_property(CACHE c_sub_lib_name
+                PROPERTY STRINGS ${LIB_ONE_NAME} ${LIB_TWO_NAME})
+    ```
+
+- Use:
+    ```cmake
+    if(${c_sub_lib_name} STREQUAL ${LIB_ONE_NAME})
+        message(STATUS "Using lib one")
+        add_subdirectory(sub_lib_one)
+    elseif(${c_sub_lib_name} STREQUAL ${LIB_TWO_NAME})
+        message(STATUS "Using lib two")
+        add_subdirectory(sub_lib_two)
+    else()
+        message(STATUS "No lib found")
+    endif(${c_sub_lib_name} STREQUAL ${LIB_ONE_NAME})
+    ```
+
+### An example lib/app cmake skeleton
 
 - File Structure
 
@@ -182,14 +218,37 @@ C:\USERS\COLINRAWLINGS\DESKTOP\TEST_CMAKE_TOOLS
         ```cpp
         #include <a_lib.h>
         ```
-      
 
-## IDE Usage
+### CMake Projects with boost
 
-- A useful `cmake-tools` command is: 
+- Build boost (see project help).
+
+- Declare settings used during the boost build:
+    ```cmake
+    set(Boost_USE_MULTITHREADED ON)
+    set(Boost_USE_STATIC_LIBS OFF)
     ```
-    CMake: Delete cached build settings and reconfigure
+
+- Find the library by defining an appropriate `BOOST_DIR`
+    ```cmake
+    set(BOOST_INCLUDEDIR ${BOOST_DIR})
+    set(BOOST_LIBRARYDIR ${BOOST_DIR}/stage/lib)
+    find_package(Boost COMPONENTS system filesystem REQUIRED)
     ```
-- *Don't* use `tasks.json` to configure the debugging, this should be left to `cmake-tools`.
-- The core functionality (build and debug) can be triggered from the bar at the bottom of the application.  
-- Build and Debug are buttons which start the activity the configuration (i.e. the targets) are shown as dropdown's to the right of their buttons.  
+
+- Use:
+    ```cmake
+    target_link_libraries(main Boost::system Boost::filesystem)
+    ```
+
+- For dynamic linking:
+    ```cmake
+    target_compile_definitions(my_lib PUBLIC BOOST_ALL_DYN_LINK)
+    ```
+
+- To run the libraries need to be copied to the bin folder:
+    ```cmake
+    add_custom_command(TARGET main POST_BUILD
+                     COMMAND ${CMAKE_COMMAND} -E copy_directory ${BOOST_LIBRARYDIR}
+                     $<TARGET_FILE_DIR:main>)
+    ```
