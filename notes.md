@@ -35,6 +35,11 @@
     ```
   (of course only the second setting is directly relevant to forcing the generator).
 
+- To install ninja (as admin):
+    ```cmd
+    $ choco install ninja
+    ```
+
 ## Configuring `clang-format`
 
 - Install llvm.
@@ -52,10 +57,13 @@
 
 - Format is taken from the first file with the name `_clang_format` or `.clang_format` encountered searching through the parent directories.
 
-- Useful hints can be obtained with: `clang-format.exe -dump-config -style=<style-of-interest>`
+- Useful hints can be obtained with:
+    - `clang-format.exe -dump-config -style=<style-of-interest>`
+    - [this interactive webpage](https://clangformat.com/)
 
 - Complete settings are described in the [documentation](https://releases.llvm.org/8.0.0/tools/clang/docs/ClangFormatStyleOptions.html)
 
+- For Visual Studio 2015 it is necessary to first install [the extension](https://marketplace.visualstudio.com/items?itemName=LLVMExtensions.ClangFormat) and then run the repair tool (`[add remove programs/VS2015/Repair]`) to get the  menu items to appear.
 
 
 ## Configuring the `vscode` C++ extension
