@@ -37,4 +37,6 @@ namespace XTest { namespace XNest {
 // STYLEGUIDE: Class Member Initialisation
 
 CMyClass::CMyClass()
-    : m_MyVariable(1.23), m_MyVariable2(1.17), m_MyVariable3(3.21){};
+    : m_MyVariable(1.23)
+    , m_MyVariable2(1.17)
+    , m_MyVariable3(3.21){};
