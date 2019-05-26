@@ -5,14 +5,13 @@
 #include <iostream>
 #include <string>
 
-
 int get_num_liba()
 {
     std::cout << "called: " << __FUNCTION__ << std::endl;
 
     boost::filesystem::path p(__FILE__);
 
-    std::cout << p.string() << std::endl;
+    std::cout << "defined in: " << p.string() << std::endl;
 
     return 42;
 }

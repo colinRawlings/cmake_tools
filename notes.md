@@ -8,6 +8,7 @@
     - `cmake` (by twxs): syntax highlighting and command completion
     - `cmake format`: auto indentation
     - `GitLens`
+    - `Graphviz Preview`: preview `.dot` file including those created by boost test.
 
 - To use `cmder` add the following to `%AppData%\Roaming\Code\User\settings.json` (the file edited when selecting `[File|Preferences|Settings]`).:
     ```json
@@ -20,6 +21,13 @@
         "/k <path to cmder>/cmder/vendor/init.bat"
         ],
     }
+    ```
+
+## Configuring `Graphviz Preview`
+- Install [Graphviz](https://graphviz.gitlab.io/_pages/Download/Download_windows.html)
+- Configure the path in the user wide `settings.json`:
+    ```json
+    "graphvizPreview.dotPath": "C:/Program Files (x86)/Graphviz2.38/bin/dot.exe",
     ```
 
 ## Configuring `cmake-tools`

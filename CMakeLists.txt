@@ -42,6 +42,7 @@ if(USE_LIB_C)
   add_subdirectory(lib_c)
 endif(USE_LIB_C)
 
-#
+# library consumers
 
 add_subdirectory(app)
+add_subdirectory(test)
