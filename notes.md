@@ -185,6 +185,18 @@
     endif(${c_sub_lib_name} STREQUAL ${LIB_ONE_NAME})
     ```
 
+### Creating a binary directory
+
+- There are a few ways to get a folder containing all exectuables and dll's.  
+    - Lots of post build `copy-directory` commands
+    - Lots of setting of the `runtime_output_directory` properties of the targets (provides fine grained control)
+    - Setting the variable which is used to initialise target properties:
+        ```cmake
+        set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
+        ```
+        `PROJECT_BINARY_DIR` is the build directory.
+        
+
 ### An example lib/app cmake skeleton
 
 - File Structure
@@ -220,7 +232,7 @@ C:\USERS\COLINRAWLINGS\DESKTOP\TEST_CMAKE_TOOLS
 
 - `lib_a`'s `CMakeLists.txt`
     ```cmake
-    add_library(lib_a STATIC)
+    add_library(lib_a)
 
     target_sources(lib_a PRIVATE 
         ${CMAKE_CURRENT_SOURCE_DIR}/src/a_lib.cpp
@@ -254,8 +266,15 @@ C:\USERS\COLINRAWLINGS\DESKTOP\TEST_CMAKE_TOOLS
 ### CMake Projects with boost
 
 - Build boost (see project help).
+    - [download .7z archive](https://www.boost.org/) and extract with 7zip (much faster).
+    - run: `<path to boost>/bootstrap.bat`
+    - run the build: 
+        ```bash
+        b2.exe --with-filesystem --with-test --with-regex --with-chrono toolset=msvc-14.1 address-model=64 architecture=x86 link=shared threading=multi
+        ```
+        *n.b. the suprising omission of hyphens when specifying the properties.  This omission is also present in the output from `b2.exe --help`.  With the hyphens (e.g. `--link=shared`) the settings appeared to be ignored.*
 
-- Declare settings used during the boost build:
+- Declare settings used during the boost build in the cmake file.:
     ```cmake
     set(Boost_USE_MULTITHREADED ON)
     set(Boost_USE_STATIC_LIBS OFF)
@@ -271,6 +290,11 @@ C:\USERS\COLINRAWLINGS\DESKTOP\TEST_CMAKE_TOOLS
 - Use:
     ```cmake
     target_link_libraries(main Boost::system Boost::filesystem)
+    ```
+    If this doesn't work ("missing find_package() call").  Fall back to:
+    ```cmake
+    target_link_libraries(lib_a ${Boost_LIBRARIES})
+    target_include_directories(lib_a PRIVATE ${Boost_INCLUDE_DIRS})
     ```
 
 - For dynamic linking:

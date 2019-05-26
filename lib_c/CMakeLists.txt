@@ -15,7 +15,7 @@ set_property(CACHE c_sub_lib_name
 
 #
 
-add_library(lib_c STATIC)
+add_library(lib_c)
 
 target_sources(lib_c PRIVATE
  ${CMAKE_CURRENT_SOURCE_DIR}/src/c_lib.cpp

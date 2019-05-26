@@ -1,10 +1,18 @@
 #include "a_lib.h"
 
+#include <boost/filesystem.hpp>
+
 #include <iostream>
+#include <string>
+
 
 int get_num_liba()
 {
     std::cout << "called: " << __FUNCTION__ << std::endl;
+
+    boost::filesystem::path p(__FILE__);
+
+    std::cout << p.string() << std::endl;
 
     return 42;
 }
