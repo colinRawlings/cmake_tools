@@ -5,43 +5,46 @@
 #include <iostream>
 #include <string>
 
+#include <chrono>
+#include <thread>
+
 int get_num_liba()
 {
-    std::cout << "called: " << __FUNCTION__ << std::endl;
-
     boost::filesystem::path p(__FILE__);
-
-    std::cout << "defined in: " << p.string() << std::endl;
 
     return 42;
 }
 
-// zmt style guide cases
+bool dereference_null()
+{
+    int *a = nullptr;
+    int b(0);
+    b = *a;
 
-// STYLEGUIDE: Enumeration Names
-enum eResult { kNone, kAll, kSomeAvailable };
+    return false;
+}
 
-// STYLEGUIDE: (???) namespaces should be nested on a single line with a single
-// indent
-namespace XTest { namespace XNest {
+bool never_return()
+{
+    std::chrono::seconds wait_duration(3);
 
-    bool IsThatAwesome() { return true; }
-
-    // STYLEGUIDE: Curly Braces
-    bool IsThatFuncAwesome(bool condition, bool another_condition)
+    while (true)
     {
-        if (condition)
-        {
-            if (another_condition)
-            {
-            }
-        }
-
-        return false;
+        std::this_thread::sleep_for(wait_duration);
+        std::cout << "." << std::endl;
     }
-}} // namespace XTest::XNest
 
-// STYLEGUIDE: Class Member Initialisation
+    return true;
+}
+
+bool throw_an_exception()
+{
+    throw 42;
+
+    return true;
+}
+
+// Class Member Initialisation
 
 CMyClass::CMyClass()
     : m_MyVariable(1.23)

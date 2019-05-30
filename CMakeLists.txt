@@ -45,4 +45,4 @@ endif(USE_LIB_C)
 # library consumers
 
 add_subdirectory(app)
-add_subdirectory(test)
+add_subdirectory(test_runner)

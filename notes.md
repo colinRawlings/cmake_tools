@@ -22,6 +22,10 @@
         ],
     }
     ```
+- To improve clarity of the tree view:
+    ```json
+    "workbench.tree.indent": 16,
+    ```
 
 ## Configuring `Graphviz Preview`
 - Install [Graphviz](https://graphviz.gitlab.io/_pages/Download/Download_windows.html)
@@ -127,6 +131,41 @@
         },
     }
     ```
+
+## Configuring Debuggers with command line options
+
+- For targets not requiring command line arguments `cmake-tools` provides a graphical configuration.
+
+- For command line arguments a good starting point for `.vscode/launch.json` is:
+
+    ```json
+    {
+        "version": "0.2.0",
+        "configurations":
+        [
+            {
+                "name": "Test Runner Launch",
+                "type": "cppvsdbg",
+                "request": "launch",
+                "program": "${workspaceFolder}/<path to test runner>/test_runner.exe",
+                "args": [
+                    "--color_output=1",
+                    "--log_level=all",
+                    "--run_test=<filter>",
+                ],
+                "stopAtEntry": false,
+                "cwd": "${workspaceFolder}",
+                "environment": [],
+                "logging": {
+                    "moduleLoad": false
+                },
+                "externalConsole": false,
+            }
+        ]
+    }
+    ```
+    *note disabling of moduleLoad logging*
+
 
 ## Incremental Builds
 

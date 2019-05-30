@@ -2,7 +2,15 @@
 
 int get_num_liba();
 
-// STYLEGUIDE: Class member initialisation
+// bad functions
+
+bool dereference_null();
+
+bool never_return();
+
+bool throw_an_exception();
+
+// class definition (style guide)
 
 class CMyClass
 {
