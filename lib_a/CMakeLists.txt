@@ -3,6 +3,8 @@ project(LibA)
 message(STATUS "Processing lib_a")
 message(STATUS "CMAKE_CURRENT_SOURCE_DIR: " ${CMAKE_CURRENT_SOURCE_DIR})
 
+message(STATUS "BOOST_LIBRARYDIR: " ${BOOST_LIBRARYDIR})
+
 find_package(Boost COMPONENTS filesystem REQUIRED)
 
 add_library(lib_a)
@@ -26,7 +28,11 @@ target_include_directories(lib_a PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 add_custom_command(TARGET lib_a POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy_directory
-                           ${BOOST_LIBRARYDIR} $<TARGET_FILE_DIR:lib_a>)
+                           ${BOOST_LIBRARYDIR} ${BINARY_OUTDIR})
+
+add_custom_command(TARGET lib_a POST_BUILD
+                   COMMAND ${CMAKE_COMMAND} -E copy_directory
+                           $<TARGET_FILE_DIR:lib_a> ${BINARY_OUTDIR})
 
 # tests
 

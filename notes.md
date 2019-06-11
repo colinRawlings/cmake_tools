@@ -54,10 +54,23 @@
     ```
   (of course only the second setting is directly relevant to forcing the generator).
 
+## Ninja
+
 - To install ninja (as admin):
     ```cmd
     $ choco install ninja
     ```
+
+- It can be challenging to ensure that the correct byte order is picked up.  In particular:
+    - `cmake` tests: `.../x32/cl.exe` not `.../x64/cl.exe`
+    - `find_boost` can fail when it looks for `x32` versions of the library.
+
+- A workaround is to run a clean configure (build folder deleted) in a developer command prompt (e.g. for VS2017):
+    ```bash
+    "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\Tools\vsdevcmd" -arch=x64
+    ```
+
+- For some reason with shared libs the variable `CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS` does not get respected leading to an absence of `.lib` files (these are not created if the dll does not export any symbols).  The build succeeds but then the linking fails.
 
 ## Configuring `clang-format`
 
@@ -339,6 +352,11 @@ C:\USERS\COLINRAWLINGS\DESKTOP\TEST_CMAKE_TOOLS
     set(BOOST_INCLUDEDIR ${BOOST_DIR})
     set(BOOST_LIBRARYDIR ${BOOST_DIR}/stage/lib)
     find_package(Boost COMPONENTS system filesystem REQUIRED)
+    ```
+
+    - If this fails retry with the following inserted before `boost` related commands:
+    ```cmake
+    set(Boost_DEBUG 1)
     ```
 
 - Use:

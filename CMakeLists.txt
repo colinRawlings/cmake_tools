@@ -19,12 +19,14 @@ message(STATUS "USE_LIB_C: " ${USE_LIB_C})
 
 #
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
+set(BINARY_OUTDIR ${PROJECT_BINARY_DIR}/bin)
 
 # boost
 
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_LIBS OFF)
+
+set(Boost_DEBUG OFF)
 
 set(BOOST_DIR C:/third_party_libs/boost_1_70_0)
 set(BOOST_INCLUDEDIR ${BOOST_DIR})

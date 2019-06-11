@@ -1,14 +1,14 @@
 #pragma once
 
-int get_num_liba();
+__declspec(dllexport) int get_num_liba();
 
 // bad functions
 
-bool dereference_null();
+__declspec(dllexport) bool dereference_null();
 
-bool never_return();
+__declspec(dllexport) bool never_return();
 
-bool throw_an_exception();
+__declspec(dllexport) bool throw_an_exception();
 
 // class definition (style guide)
 
