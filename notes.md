@@ -27,6 +27,13 @@
     "workbench.tree.indent": 16,
     ```
 
+## Configuring the Visual Studio Tool Chain
+
+- Using the VS2015 installer 
+  - install: `Programming Languages/Visual C++`
+  - install: `Windows and Web Development/Universal Windows App Development Tools/Windows 10 SDK`
+    - *This is more subtle. Compiling etc. works without it but `Intellisense` complains about missing CRT headers (e.g. `corecrt.h`) and then disables the on-the-fly static checking ("red error squiggles").*
+
 ## Configuring `Graphviz Preview`
 - Install [Graphviz](https://graphviz.gitlab.io/_pages/Download/Download_windows.html)
 - Configure the path in the user wide `settings.json`:
