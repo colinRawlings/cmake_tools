@@ -63,6 +63,8 @@
     "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\Tools\vsdevcmd" -arch=x64
     ```
 
+- After this can configure (but not clean and configure) from within `code`
+
 - For some reason with shared libs the variable `CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS` does not get respected leading to an absence of `.lib` files (these are not created if the dll does not export any symbols).  The build succeeds but then the linking fails.
 
 ## Configuring `clang-format`
