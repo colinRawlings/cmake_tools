@@ -20,6 +20,7 @@ message(STATUS "USE_LIB_C: " ${USE_LIB_C})
 #
 
 set(BINARY_OUTDIR ${PROJECT_BINARY_DIR}/bin)
+message(STATUS "BINARY_OUTDIR: ${BINARY_OUTDIR}")
 
 # boost
 
@@ -28,7 +29,17 @@ set(Boost_USE_STATIC_LIBS OFF)
 
 set(Boost_DEBUG OFF)
 
-set(BOOST_DIR C:/third_party_libs/boost_1_70_0)
+#[[ 
+For vscode define BOOST_DIR with:
+"cmake.configureSettings": {
+  "BOOST_DIR": "<path_to_boost>\\boost_1_70_0",
+},
+#]]
+
+if(NOT DEFINED BOOST_DIR )
+  message( FATAL_ERROR "BOOST_DIR must be defined.")
+endif()
+
 set(BOOST_INCLUDEDIR ${BOOST_DIR})
 set(BOOST_LIBRARYDIR ${BOOST_DIR}/stage/lib)
 

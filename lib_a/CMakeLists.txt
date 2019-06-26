@@ -28,11 +28,11 @@ target_include_directories(lib_a PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 add_custom_command(TARGET lib_a POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy_directory
-                           ${BOOST_LIBRARYDIR} ${BINARY_OUTDIR})
+                           ${BOOST_LIBRARYDIR} ${BINARY_OUTDIR}/$<CONFIG>)
 
 add_custom_command(TARGET lib_a POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy_directory
-                           $<TARGET_FILE_DIR:lib_a> ${BINARY_OUTDIR})
+                           $<TARGET_FILE_DIR:lib_a> ${BINARY_OUTDIR}/$<CONFIG>)
 
 # tests
 
