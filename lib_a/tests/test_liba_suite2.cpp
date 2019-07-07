@@ -11,4 +11,9 @@ BOOST_AUTO_TEST_CASE(test_case3) { BOOST_TEST(true); }
 BOOST_AUTO_TEST_CASE(test_case4) { BOOST_TEST(true); }
 
 BOOST_AUTO_TEST_SUITE_END() // trivial_suite
+
+BOOST_AUTO_TEST_SUITE(empty_suite)
+
+BOOST_AUTO_TEST_SUITE_END() // empty
+
 BOOST_AUTO_TEST_SUITE_END() // liba_suite
