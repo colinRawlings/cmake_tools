@@ -1,6 +1,6 @@
 
 
-message(STATUS "Processing lib one")
+message(STATUS "Processing: lib one")
 
 set(lib_one_headers one_lib.h)
 set(lib_one_source one_lib.cpp)

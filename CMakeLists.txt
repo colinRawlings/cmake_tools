@@ -29,15 +29,18 @@ set(Boost_USE_STATIC_LIBS OFF)
 
 set(Boost_DEBUG OFF)
 
-#[[ 
+#[[
 For vscode define BOOST_DIR with:
 "cmake.configureSettings": {
   "BOOST_DIR": "<path_to_boost>\\boost_1_70_0",
 },
 #]]
 
-if(NOT DEFINED BOOST_DIR )
-  message( FATAL_ERROR "BOOST_DIR must be defined.")
+if(NOT DEFINED BOOST_DIR)
+  message(
+    FATAL_ERROR
+      "BOOST_DIR must be defined, do so with CMAKE_GUI or .vscode/settings.json"
+    )
 endif()
 
 set(BOOST_INCLUDEDIR ${BOOST_DIR})
@@ -54,6 +57,8 @@ endif(USE_LIB_A)
 if(USE_LIB_C)
   add_subdirectory(lib_c)
 endif(USE_LIB_C)
+
+add_subdirectory(lib_pch)
 
 # library consumers
 

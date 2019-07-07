@@ -5,3 +5,4 @@ cmake_build/
 cmake_ninja/
 build_msvc/
 build_ninja/
+cmake_msvc/

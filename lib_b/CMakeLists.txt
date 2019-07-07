@@ -1,7 +1,7 @@
 
 project(LibB)
 
-message(STATUS "Processing lib_b")
+message(STATUS "Processing: lib_b")
 message(STATUS "CMAKE_CURRENT_SOURCE_DIR: " ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_library(lib_b)

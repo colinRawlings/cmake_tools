@@ -1,6 +1,6 @@
 project(LibA)
 
-message(STATUS "Processing lib_a")
+message(STATUS "Processing: lib_a")
 message(STATUS "CMAKE_CURRENT_SOURCE_DIR: " ${CMAKE_CURRENT_SOURCE_DIR})
 
 message(STATUS "BOOST_LIBRARYDIR: " ${BOOST_LIBRARYDIR})
