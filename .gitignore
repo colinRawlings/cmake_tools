@@ -3,3 +3,5 @@ build/
 cmake_build/
 !.vscode/settings.json
 cmake_ninja/
+build_msvc/
+build_ninja/

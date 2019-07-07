@@ -11,4 +11,4 @@ target_link_libraries(test_runner test_liba)
 
 add_custom_command(TARGET test_runner POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy_directory
-                           $<TARGET_FILE_DIR:test_runner> ${BINARY_OUTDIR})
+                           $<TARGET_FILE_DIR:test_runner> ${BINARY_OUTDIR}/$<CONFIG>)

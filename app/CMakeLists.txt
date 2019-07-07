@@ -8,4 +8,4 @@ endif(USE_LIB_A)
 
 add_custom_command(TARGET main POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy_directory
-                           $<TARGET_FILE_DIR:main> ${BINARY_OUTDIR})
+                           $<TARGET_FILE_DIR:main> ${BINARY_OUTDIR}/$<CONFIG>)

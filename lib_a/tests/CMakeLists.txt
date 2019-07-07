@@ -15,4 +15,4 @@ target_link_libraries(test_liba Boost::unit_test_framework lib_a)
 
 add_custom_command(TARGET test_liba POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy_directory
-                           $<TARGET_FILE_DIR:test_liba> ${BINARY_OUTDIR})
+                           $<TARGET_FILE_DIR:test_liba> ${BINARY_OUTDIR}/$<CONFIG>)

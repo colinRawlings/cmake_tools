@@ -54,6 +54,57 @@
     ```
   (of course only the second setting is directly relevant to forcing the generator).
 
+- The `cmake-tools` kit `Visual Studio 14.0 - x86_amd64` uses the x86 build of the compilers to       build an amd64 compatible binary.  Note the settings in the kit are overriden if the `Visual Studio` generator is used.
+
+## clcache
+
+- work path to cl: `C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\CL.exe`
+- installed following [cmake instructions](https://github.com/frerich/clcache/wiki/Integration#cmake)
+- clcache_bin: `C:/ProgramData/chocolatey/bin/clcache.exe`
+- n.b. install binary using chocolatey approach as this avoids the python2 issues inherent in the pip approach.n.b. install binary using chocolatey approach as this avoids the python2 issues inherent in the pip approach.
+
+### Installation (Recommended)
+
+- Install binary using `chocolatey` (as this avoids the need for python3 on the path which is not compatible with S4L development).
+    ```cmd
+    curl -L https://github.com/frerich/clcache/releases/download/v4.2.0/clcache.4.2.0.nupkg --output clcache.4.2.0.nupkg
+    choco install clcache --source=.
+    ```
+- Follow the Integration for [Visual Studio instructions](https://github.com/frerich/clcache/wiki/Integration#integration-for-visual-studio):
+    1. Rename `cl.exe` to e.g. `cl_original.exe`
+    2. Rename `cl.exe.config` to e.g. `cl_original.exe.config`
+    3. Copy the generated `clcache.exe` file `to cl.exe`
+    4. Set CLCACHE_CL environment variable to point to `cl_original.exe`.
+
+    *Additional notes*:
+    1. The path to the relevant `cl.exe` can be found by running a configuration.
+    3. the Choco `clcache.exe` binary relies on content it expects to find in `..\lib\clcache`.  
+        - Thus this `lib\clcache` folder must also be copied to the parent of the folder containing `cl.exe`.
+    4. To check everything is working, start a developer command prompt and run:
+        `cl.exe`
+        - In the output you should see the "fake" `cl.exe` (`clcache.exe`) start then call the real `cl.exe` (`cl_original.exe`) who should complain that no source file was specified. 
+
+- For S4L you need to significantly increase the cache size (seems to need about 13GB per configuration):
+    ```cmd
+    clcache -M 13000000
+    ```
+    - You can check the result of this command as well as other aspects of its performance using:
+        ```cmd
+        clcache -s
+        ```
+
+### Alternative (No messing with the cl.exe folder)
+
+- Set environment variable `clcache_cl` to `C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\cl.exe`
+- Configure as normal
+- Build with:
+    ```cmd
+    $ "C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools\VsDevCmd.bat" -arch=x64
+    $ MSBuild.exe /p:CLToolExe=clcache.exe /p:CLToolPath=C:\ProgramData\chocolatey\bin /property:Configuration=Release <path to solution>.sln
+    ```
+
+
+
 ## Ninja
 
 - To install ninja (as admin):
@@ -65,10 +116,31 @@
     - `cmake` tests: `.../x32/cl.exe` not `.../x64/cl.exe`
     - `find_boost` can fail when it looks for `x32` versions of the library.
 
-- A workaround is to run a clean configure (build folder deleted) in a developer command prompt (e.g. for VS2017):
+- A workaround is to run a clean configure (build folder deleted) in a cmd shell that has the VS variables set:
+    - For the non-cross compiled version type: `Native ... ` into the windows search bar or run the corresponding scripts.
+    - for VS2017:
     ```bash
     "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\Tools\vsdevcmd" -arch=x64
     ```
+    - on ZMT machine (VS2015):
+    ```bash
+     "C:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\VC\\bin\\x86_amd64\\vcvarsx86_amd64.bat"
+    ```
+    (this is the cross compile version: x86 binaries build amd64 binaries)
+
+- Check that the correct byte order has been built: `dumpbin /all C:\_dev\s4l_ninja\_build\SuperMash\SuperMash\XCore\CMakeFiles\XCore.dir\AbstractObserver.cpp.obj > c:\temp\AO_dmp.txt`
+
+- Single target build:
+    ```
+    cmake --build . --target D -- -j7
+    ```
+    or
+
+    ```
+    ninja -j7 D
+    ```
+
+- TODO: document kit configuration for Ninja (setting env:CC and env: CXX correctly).
 
 - After this can configure (but not clean and configure) from within `code`
 
@@ -365,7 +437,7 @@ C:\USERS\COLINRAWLINGS\DESKTOP\TEST_CMAKE_TOOLS
     ```cmake
     target_link_libraries(main Boost::system Boost::filesystem)
     ```
-    If this doesn't work ("missing find_package() call").  Fall back to:
+    If this doesn't work ("missing find_package() call").  [Fall back to](https://cliutils.gitlab.io/modern-cmake/chapters/packages/Boost.html):
     ```cmake
     target_link_libraries(lib_a ${Boost_LIBRARIES})
     target_include_directories(lib_a PRIVATE ${Boost_INCLUDE_DIRS})
