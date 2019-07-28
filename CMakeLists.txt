@@ -9,6 +9,13 @@ project(test_cmake_tools)
 
 option(BUILD_SHARED_LIBS "build shared libs" ON)
 
+option(USE_CLCACHE "configure for use with clcache (/Z7 instead of /Zi)" ON)
+#[[
+For smoothest integration place move cl.exe and its config to -> cl_original.exe
+Then copy the clcache.exe to the former location of cl.exe.  In this way the
+cmake-tools still finds the crt paths.
+#]]
+
 option(USE_LIB_A "use lib a" ON)
 option(USE_LIB_C "use lib c" OFF)
 
@@ -21,6 +28,16 @@ message(STATUS "USE_LIB_C: " ${USE_LIB_C})
 
 set(BINARY_OUTDIR ${PROJECT_BINARY_DIR}/bin)
 message(STATUS "BINARY_OUTDIR: ${BINARY_OUTDIR}")
+
+# compiler settings
+
+if (${USE_CLCACHE})
+  set(debug_info_flag "/Z7")
+else()
+  set(debug_info_flag "/Zi")
+endif()
+
+set(CMAKE_CXX_FLAGS_DEBUG "/MDd ${debug_info_flag} /Ob0 /Od /RTC1")
 
 # boost
 
