@@ -99,20 +99,41 @@
 
 - For some reason with shared libs the variable `CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS` does not get respected leading to an absence of `.lib` files (these are not created if the dll does not export any symbols).  The build succeeds but then the linking fails.
 
+## Configure `git`
+
+- Add ssh keys (`id_rsa`, `id_rsa.pub`) to: `C:\Program Files\Git\.ssh` (assuming default install location).
+- Configure username and email:
+    ```
+    git config --global user.name "<name>"
+    git config --global user.email "<email>"
+    ```
+
+### mergetool
+
+- Configure
+    ```
+    git config --global --add merge.tool kdiff3
+    git config --global --add mergetool.kdiff3.path "C:/Program Files/KDiff3/kdiff3.exe"
+    ```
+- Run (will run on each conflicted file in turn)
+    ```
+    git mergetool --tool=kdiff3
+    ```
+
+
 ## Configuring `clang-format`
 
-- Install llvm.
+- clang-format 6.0 is bundled with vscode's `C/C++` extension, its configuration options are somewhat more limited compared with the current release.
 
-- Set as formatter:
+- To install a more recent `clang-format`:
 
-    ```json
-    "[cpp]": {
-      "editor.defaultFormatter": "xaver.clang-format",
-    },
-    "clang-format.executable": "<path to LLVM>/bin/clang-format.exe",
-    "editor.formatOnSave": true,
-    "editor.formatOnType": true
-    ```
+    - Install llvm.
+
+    - Set as formatter:
+
+        ```json
+        "clang-format.executable": "<path to LLVM>/bin/clang-format.exe",
+        ```
 
 - Format is taken from the first file with the name `_clang_format` or `.clang_format` encountered searching through the parent directories.
 
@@ -214,15 +235,12 @@
     *note disabling of moduleLoad logging*
 
 
-## Incremental Builds
-
-### `vswhere.exe`
 
 
 ## Code Formating
 
 ### Installing `clang-format`
-
+- clang-format 6.0 is bundled with vscode its configuration options are somewhat more limited compared with the current release.
 
 ### Settings configuration
       
