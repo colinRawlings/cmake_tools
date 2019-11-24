@@ -56,7 +56,7 @@ For vscode define BOOST_DIR with:
 if(NOT DEFINED BOOST_DIR)
   message(
     FATAL_ERROR
-      "BOOST_DIR must be defined, do so with CMAKE_GUI or .vscode/settings.json"
+      "BOOST_DIR must be defined, do so with CMAKE_GUI or .vscode/settings.json: \n\"cmake.configureSettings\": {\"BOOST_DIR\": \"<path_to_boost>\\boost_1_70_0\"}\""
     )
 endif()
 
@@ -80,4 +80,4 @@ add_subdirectory(lib_pch)
 # library consumers
 
 add_subdirectory(app)
-add_subdirectory(test_runner)
+# add_subdirectory(test_runner)

@@ -364,7 +364,7 @@ C:\USERS\COLINRAWLINGS\DESKTOP\TEST_CMAKE_TOOLS
     - run: `<path to boost>/bootstrap.bat`
     - run the build: 
         ```bash
-        b2.exe --with-filesystem --with-test --with-regex --with-chrono toolset=msvc-14.1 address-model=64 architecture=x86 link=shared threading=multi
+        b2.exe --with-filesystem --with-test --with-regex --with-chrono toolset=msvc-14.0 address-model=64 architecture=x86 link=shared threading=multi -j 18
         ```
         *n.b. the suprising omission of hyphens when specifying the properties.  This omission is also present in the output from `b2.exe --help`.  With the hyphens (e.g. `--link=shared`) the settings appeared to be ignored.*
 
