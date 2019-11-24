@@ -385,8 +385,14 @@ C:\USERS\COLINRAWLINGS\DESKTOP\TEST_CMAKE_TOOLS
     ```cmake
     set(Boost_DEBUG 1)
     ```
+- Use header only components:
+    ```cmake
+    find_package(Boost)
 
-- Use:
+    target_link_libraries(main Boost::boost)
+    ```
+
+- Use compiled:
     ```cmake
     target_link_libraries(main Boost::system Boost::filesystem)
     ```
