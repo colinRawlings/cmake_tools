@@ -409,9 +409,20 @@ C:\USERS\COLINRAWLINGS\DESKTOP\TEST_CMAKE_TOOLS
 - Build boost (see project help).
     - [download .7z archive](https://www.boost.org/) and extract with 7zip (much faster).
     - run: `<path to boost>/bootstrap.bat`
+    - configure the path to python by creating a user-config file (e.g. `user-config_x64.jam`), it need only contain:
+        ```ini
+        using python
+        : 3.6 # version	 
+        : C:\\Python36\\python.exe
+        : C:\\Python36\\include
+        : C:\\Python36\\libs
+        : <toolset>msvc # condition
+        ;
+        ```
+    - In the absence of this file attempts to build python (`--with-python`) will seemingly silently fail.
     - run the build: 
         ```bash
-        b2.exe --with-filesystem --with-test --with-regex --with-chrono toolset=msvc-14.1 address-model=64 architecture=x86 link=shared threading=multi
+        b2.exe --with-filesystem --with-test --with-regex --with-chrono toolset=msvc-14.0 address-model=64 architecture=x86 link=shared threading=multi --user-config=user-config_x64.jam -j 12
         ```
         *n.b. the suprising omission of hyphens when specifying the properties.  This omission is also present in the output from `b2.exe --help`.  With the hyphens (e.g. `--link=shared`) the settings appeared to be ignored.*
 
@@ -443,7 +454,7 @@ C:\USERS\COLINRAWLINGS\DESKTOP\TEST_CMAKE_TOOLS
     target_include_directories(lib_a PRIVATE ${Boost_INCLUDE_DIRS})
     ```
 
-- For dynamic linking:
+- For dynamic linking (i.e. if linker complains it cannot find libboost_*.lib but boost_*/dll exists):
     ```cmake
     target_compile_definitions(my_lib PUBLIC BOOST_ALL_DYN_LINK)
     ```
@@ -454,3 +465,6 @@ C:\USERS\COLINRAWLINGS\DESKTOP\TEST_CMAKE_TOOLS
                      COMMAND ${CMAKE_COMMAND} -E copy_directory ${BOOST_LIBRARYDIR}
                      $<TARGET_FILE_DIR:main>)
     ```
+
+- For python the linked dll is also required (e.g. `python36.dll`).
+- Boost 1.64 does not build on windows with a patch (boost 1.65 does)
