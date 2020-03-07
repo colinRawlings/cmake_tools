@@ -12,7 +12,7 @@ __declspec(dllexport) bool throw_an_exception();
 
 // class definition (style guide)
 
-class CMyClass
+class __declspec(dllexport) CMyClass
 {
     double m_MyVariable;
     double m_MyVariable2;

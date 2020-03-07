@@ -56,79 +56,36 @@
 
 - The `cmake-tools` kit `Visual Studio 14.0 - x86_amd64` uses the x86 build of the compilers to       build an amd64 compatible binary.  Note the settings in the kit are overriden if the `Visual Studio` generator is used.
 
-## clcache
+## High speed cl (ninja and clcache) with `cmake-tools`
 
-- work path to cl: `C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\CL.exe`
-- installed following [cmake instructions](https://github.com/frerich/clcache/wiki/Integration#cmake)
-- clcache_bin: `C:/ProgramData/chocolatey/bin/clcache.exe`
-- n.b. install binary using chocolatey approach as this avoids the python2 issues inherent in the pip approach.n.b. install binary using chocolatey approach as this avoids the python2 issues inherent in the pip approach.
+*Placing a renamed copy of clcache.exe into the compiler folder currently seems necessary to ensure that later vs-code c_cpp tools can find the `crt` and std lib paths.*
 
-### Installation (Recommended)
+- Select the desired kit for the `cmake-tools` extension (e.g. x86_amd64).  Configure to find the location of the `cl.exe` it uses: `<msvc cl dir>/cl.exe`
+- Install ninja with choco: `choco install -y ninja`
+- In `settings.json` set: `"cmake.generator": "Ninja"`
+- Install clcache with a python3 using `pip`: `pip install clcache`
+- Move `cl.exe` to `cl_original.exe`
+- Copy `cl.exe.config` to `cl_original.exe.config`
+- Set the environment variable `clcache_cl` to point to the new path: `<msvc cl dir>\cl_original.exe`
+- Copy the installed `clcache.exe` to `<msvc cl dir>/cl.exe`
+- Set the cache size to something reasonable (default 1GB is probably not enough)
+    - `<msvc cl dir>/cl.exe -M 10000000000`
 
-- Install binary using `chocolatey` (as this avoids the need for python3 on the path which is not compatible with S4L development).
-    ```cmd
-    curl -L https://github.com/frerich/clcache/releases/download/v4.2.0/clcache.4.2.0.nupkg --output clcache.4.2.0.nupkg
-    choco install clcache --source=.
-    ```
-- Follow the Integration for [Visual Studio instructions](https://github.com/frerich/clcache/wiki/Integration#integration-for-visual-studio):
-    1. Rename `cl.exe` to e.g. `cl_original.exe`
-    2. Rename `cl.exe.config` to e.g. `cl_original.exe.config`
-    3. Copy the generated `clcache.exe` file `to cl.exe`
-    4. Set CLCACHE_CL environment variable to point to `cl_original.exe`.
 
-    *Additional notes*:
-    1. The path to the relevant `cl.exe` can be found by running a configuration.
-    3. the Choco `clcache.exe` binary relies on content it expects to find in `..\lib\clcache`.  
-        - Thus this `lib\clcache` folder must also be copied to the parent of the folder containing `cl.exe`.
-    4. To check everything is working, start a developer command prompt and run:
-        `cl.exe`
-        - In the output you should see the "fake" `cl.exe` (`clcache.exe`) start then call the real `cl.exe` (`cl_original.exe`) who should complain that no source file was specified. 
+### `clcache` - Further Notes
 
-- For S4L you need to significantly increase the cache size (seems to need about 13GB per configuration):
-    ```cmd
-    clcache -M 13000000
-    ```
-    - You can check the result of this command as well as other aspects of its performance using:
-        ```cmd
-        clcache -s
-        ```
-
-### Alternative (No messing with the cl.exe folder)
-
-- Set environment variable `clcache_cl` to `C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\cl.exe`
-- Configure as normal
-- Build with:
+- Build a `sln` with MSVC:
     ```cmd
     $ "C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools\VsDevCmd.bat" -arch=x64
     $ MSBuild.exe /p:CLToolExe=clcache.exe /p:CLToolPath=C:\ProgramData\chocolatey\bin /property:Configuration=Release <path to solution>.sln
     ```
 
-
-
-## Ninja
-
-- To install ninja (as admin):
-    ```cmd
-    $ choco install ninja
-    ```
-
-- It can be challenging to ensure that the correct byte order is picked up.  In particular:
-    - `cmake` tests: `.../x32/cl.exe` not `.../x64/cl.exe`
-    - `find_boost` can fail when it looks for `x32` versions of the library.
-
-- A workaround is to run a clean configure (build folder deleted) in a cmd shell that has the VS variables set:
-    - For the non-cross compiled version type: `Native ... ` into the windows search bar or run the corresponding scripts.
-    - for VS2017:
-    ```bash
-    "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\Tools\vsdevcmd" -arch=x64
-    ```
-    - on ZMT machine (VS2015):
-    ```bash
-     "C:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\VC\\bin\\x86_amd64\\vcvarsx86_amd64.bat"
-    ```
-    (this is the cross compile version: x86 binaries build amd64 binaries)
+### Ninja - Further Notes
 
 - Check that the correct byte order has been built: `dumpbin /all C:\_dev\s4l_ninja\_build\SuperMash\SuperMash\XCore\CMakeFiles\XCore.dir\AbstractObserver.cpp.obj > c:\temp\AO_dmp.txt`
+
+
+- Ninja also has a handy feature for producing dot files showing the dependencies.  Run `ninja --help` for details.
 
 - Single target build:
     ```
@@ -140,26 +97,43 @@
     ninja -j7 D
     ```
 
-- TODO: document kit configuration for Ninja (setting env:CC and env: CXX correctly).
-
-- After this can configure (but not clean and configure) from within `code`
-
 - For some reason with shared libs the variable `CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS` does not get respected leading to an absence of `.lib` files (these are not created if the dll does not export any symbols).  The build succeeds but then the linking fails.
+
+## Configure `git`
+
+- Add ssh keys (`id_rsa`, `id_rsa.pub`) to: `C:\Program Files\Git\.ssh` (assuming default install location).
+- Configure username and email:
+    ```
+    git config --global user.name "<name>"
+    git config --global user.email "<email>"
+    ```
+
+### mergetool
+
+- Configure
+    ```
+    git config --global --add merge.tool kdiff3
+    git config --global --add mergetool.kdiff3.path "C:/Program Files/KDiff3/kdiff3.exe"
+    ```
+- Run (will run on each conflicted file in turn)
+    ```
+    git mergetool --tool=kdiff3
+    ```
+
 
 ## Configuring `clang-format`
 
-- Install llvm.
+- clang-format 6.0 is bundled with vscode's `C/C++` extension, its configuration options are somewhat more limited compared with the current release.
 
-- Set as formatter:
+- To install a more recent `clang-format`:
 
-    ```json
-    "[cpp]": {
-      "editor.defaultFormatter": "xaver.clang-format",
-    },
-    "clang-format.executable": "<path to LLVM>/bin/clang-format.exe",
-    "editor.formatOnSave": true,
-    "editor.formatOnType": true
-    ```
+    - Install llvm.
+
+    - Set as formatter:
+
+        ```json
+        "clang-format.executable": "<path to LLVM>/bin/clang-format.exe",
+        ```
 
 - Format is taken from the first file with the name `_clang_format` or `.clang_format` encountered searching through the parent directories.
 
@@ -261,15 +235,12 @@
     *note disabling of moduleLoad logging*
 
 
-## Incremental Builds
-
-### `vswhere.exe`
 
 
 ## Code Formating
 
 ### Installing `clang-format`
-
+- clang-format 6.0 is bundled with vscode its configuration options are somewhat more limited compared with the current release.
 
 ### Settings configuration
       
@@ -443,8 +414,14 @@ C:\USERS\COLINRAWLINGS\DESKTOP\TEST_CMAKE_TOOLS
     ```cmake
     set(Boost_DEBUG 1)
     ```
+- Use header only components:
+    ```cmake
+    find_package(Boost)
 
-- Use:
+    target_link_libraries(main Boost::boost)
+    ```
+
+- Use compiled:
     ```cmake
     target_link_libraries(main Boost::system Boost::filesystem)
     ```

@@ -1,5 +1,9 @@
 #include <iostream>
 #include <string>
+#include <vector>
+
+#include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
 
 #include <a_lib.h>
 
@@ -25,6 +29,11 @@ int main()
   std::cout << a_string << std::endl;
 
   int d(b);
+
+  // try to confuse debugger
+
+  std::vector<float> my_vec{1.f,2.f,3.f};
+  boost::shared_ptr<CMyClass> mc = boost::make_shared<CMyClass>();
 
   return 0;
 }
